@@ -8,14 +8,6 @@ import umc.spring.repository.MissionRepository;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class MissionQueryService {
-
-    private final MissionRepository missionRepository;
-
-    public List<Mission> getHomeMissions(Long memberId, String regionName, Long cursor, int limit) {
-        return missionRepository.findAvailableMissions(memberId, regionName, cursor, limit);
-    }
+public interface MissionQueryService {
+    List<Mission> getHomeMissions(Long memberId, String regionName, Long cursor, int limit);
 }

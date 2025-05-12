@@ -24,24 +24,24 @@ repositories {
 }
 
 dependencies {
-	// ✅ Spring Boot
+	// Spring Boot
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-
-	// ✅ Lombok
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// ✅ DB
+	// DB
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
-	// ✅ QueryDSL (jakarta)
+	// QueryDSL (jakarta)
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
-	// ✅ 테스트
+	// 테스트
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
@@ -52,7 +52,7 @@ tasks.named('test') {
 
 def generated = 'src/main/generated'
 
-// ✅ QueryDSL Q파일 경로 지정
+// QueryDSL Q파일 경로 지정
 sourceSets {
 	main {
 		java {
@@ -61,12 +61,12 @@ sourceSets {
 	}
 }
 
-// ✅ Q파일 생성 경로 지정 (Gradle 7+)
+// Q파일 생성 경로 지정 (Gradle 7+)
 tasks.withType(JavaCompile).configureEach {
 	options.generatedSourceOutputDirectory = file(generated)
 }
 
-// ✅ clean 시 Q파일도 삭제되도록
+// clean 시 Q파일도 삭제되도록
 tasks.named('clean') {
 	delete file(generated)
 }
