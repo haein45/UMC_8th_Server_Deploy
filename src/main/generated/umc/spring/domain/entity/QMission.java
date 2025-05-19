@@ -35,6 +35,8 @@ public class QMission extends EntityPathBase<Mission> {
 
     public final StringPath missionSpec = createString("missionSpec");
 
+    public final QRegion region;
+
     public final NumberPath<Integer> reward = createNumber("reward", Integer.class);
 
     public final QStore store;
@@ -60,6 +62,7 @@ public class QMission extends EntityPathBase<Mission> {
 
     public QMission(Class<? extends Mission> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.region = inits.isInitialized("region") ? new QRegion(forProperty("region")) : null;
         this.store = inits.isInitialized("store") ? new QStore(forProperty("store"), inits.get("store")) : null;
     }
 

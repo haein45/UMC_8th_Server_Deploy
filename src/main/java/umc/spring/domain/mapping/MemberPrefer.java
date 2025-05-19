@@ -24,4 +24,15 @@ public class MemberPrefer extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private FoodCategory foodCategory;
+
+    public void setMember(Member member) {
+        // 기존 연관관계 제거 (양방향 안정성 확보)
+        if (this.member != null) {
+            this.member.getMemberPreferList().remove(this);
+        }
+
+        // 새 연관관계 설정
+        this.member = member;
+        member.getMemberPreferList().add(this);
+    }
 }

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.spring.domain.entity.Store;
 import umc.spring.repository.StoreRepository.StoreRepository;
-import umc.spring.service.StoreService.StoreQueryService;
 
 import java.util.List;
 import java.util.Optional;
