@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import umc.spring.apiPayload.exception.CustomException;
 import umc.spring.domain.entity.Member;
 import umc.spring.domain.entity.Review;
+import umc.spring.domain.mapping.MemberMission;
+import umc.spring.repository.MemberMissionRepository.MemberMissionRepository;
 import umc.spring.repository.ReviewRepository;
 import umc.spring.repository.member.MemberRepository;
 import umc.spring.apiPayload.exception.CustomException;
@@ -18,11 +20,19 @@ public class MemberQueryServiceImpl implements MemberQueryService {
 
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
+    private final MemberMissionRepository memberMissionRepository;
 
     @Override
     public Page<Review> getMyReviews(Long memberId, int page) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException("해당 멤버가 존재하지 않습니다."));
         return reviewRepository.findAllByMember(member, PageRequest.of(page, 10));
+    }
+    @Override
+    public Page<MemberMission> getInProgressMissions(Long memberId, int page) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException("해당 멤버가 존재하지 않습니다."));
+        Pageable pageable = PageRequest.of(page, 10);
+        return memberMissionRepository.findAllByMemberAndIsSuccessFalse(member, pageable);
     }
 }

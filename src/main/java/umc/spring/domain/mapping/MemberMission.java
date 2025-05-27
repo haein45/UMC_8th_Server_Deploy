@@ -27,4 +27,15 @@ public class MemberMission extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private MissionStatus status;
+
+    @Column(nullable = false)
+    private boolean isSuccess;
+
+    public boolean isSuccess() {
+        return this.status == MissionStatus.COMPLETED;
+    }
+
+    public void updateSuccess(boolean success) {
+        this.status = success ? MissionStatus.COMPLETED : MissionStatus.IN_PROGRESS;
+    }
 }

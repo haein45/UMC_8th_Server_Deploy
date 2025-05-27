@@ -10,3 +10,4 @@ public class StoreResponseDTO {
     private String name;
     private String address;
 }
+

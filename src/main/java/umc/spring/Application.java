@@ -41,7 +41,7 @@ public class Application {
 			var missionService = context.getBean(umc.spring.service.MemberMissionService.MemberMissionQueryServiceImpl.class);
 
 			Long memberId = 1L;
-			MissionStatus status = MissionStatus.진행중;
+			MissionStatus status = MissionStatus.IN_PROGRESS;
 			Long cursor = Long.MAX_VALUE;
 			int limit = 10;
 

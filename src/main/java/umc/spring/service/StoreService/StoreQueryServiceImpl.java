@@ -1,9 +1,14 @@
 package umc.spring.service.StoreService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.spring.domain.entity.Mission;
 import umc.spring.domain.entity.Store;
+import umc.spring.repository.MissionRepository;
 import umc.spring.repository.StoreRepository.StoreRepository;
 
 import java.util.List;
@@ -15,6 +20,7 @@ import java.util.Optional;
 public class StoreQueryServiceImpl implements StoreQueryService {
 
     private final StoreRepository storeRepository;
+    private final MissionRepository missionRepository;
 
     @Override
     public Optional<Store> findStore(Long id) {
@@ -28,5 +34,12 @@ public class StoreQueryServiceImpl implements StoreQueryService {
         filteredStores.forEach(store -> System.out.println("Store: " + store));
 
         return filteredStores;
+    }
+    @Override
+    public Page<Mission> getMissionListByStoreId(Long storeId, int page) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new RuntimeException("Store not found"));
+        Pageable pageable = PageRequest.of(page, 10);
+        return missionRepository.findAllByStore(store, pageable);
     }
 }

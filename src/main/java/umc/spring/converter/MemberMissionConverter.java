@@ -11,7 +11,7 @@ public class MemberMissionConverter {
         return MemberMission.builder()
                 .member(member)
                 .mission(mission)
-                .status(MissionStatus.진행중)
+                .status(MissionStatus.IN_PROGRESS)
                 .build();
     }
 }

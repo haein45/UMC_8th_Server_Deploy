@@ -8,8 +8,10 @@ import umc.spring.apiPayload.exception.handler.FoodCategoryHandler;
 import umc.spring.converter.member.MemberPreferConverter;
 import umc.spring.domain.entity.FoodCategory;
 import umc.spring.domain.entity.Member;
+import umc.spring.domain.mapping.MemberMission;
 import umc.spring.domain.mapping.MemberPrefer;
 import umc.spring.repository.FoodCategoryRepository;
+import umc.spring.repository.MemberMissionRepository.MemberMissionRepository;
 import umc.spring.repository.member.MemberRepository;
 import umc.spring.web.dto.member.MemberRequestDTO;
 import umc.spring.converter.member.MemberConverter;
@@ -24,6 +26,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     private final MemberRepository memberRepository;
     private final FoodCategoryRepository foodCategoryRepository;
+    private final MemberMissionRepository memberMissionRepository;
 
     @Override
     public Member joinMember(MemberRequestDTO.JoinDto request) {
@@ -44,5 +47,17 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
         return memberRepository.save(newMember);
     }
+    @Override
+    public void completeMission(Long memberId, Long missionId) {
+        MemberMission mission = memberMissionRepository.findByMemberIdAndMissionId(memberId, missionId)
+                .orElseThrow(() -> new RuntimeException("도전한 미션이 존재하지 않습니다."));
+
+        if (mission.isSuccess()) {
+            throw new RuntimeException("이미 완료된 미션입니다.");
+        }
+
+        mission.updateSuccess(true);
+    }
+
 }
 
