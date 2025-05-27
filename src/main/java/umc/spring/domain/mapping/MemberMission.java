@@ -25,8 +25,7 @@ public class MemberMission extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Enumerated(EnumType.STRING)
-    private MissionStatus status;
+    @Enumerated(EnumType.STRING) private MissionStatus status;
 
     @Column(nullable = false)
     private boolean isSuccess;
