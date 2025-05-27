@@ -17,4 +17,30 @@ public class MemberResponseDTO {
         Long memberId;
         LocalDateTime createdAt;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MyReviewDTO {
+        private String storeName;
+        private Float score;
+        private String body;
+        private LocalDateTime createdAt;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MyReviewListDTO {
+        private List<MyReviewDTO> reviews;
+        private int totalPage;
+        private long totalElements;
+        private boolean isFirst;
+        private boolean isLast;
+    }
+
 }
+
+

@@ -1,12 +1,16 @@
 package umc.spring.converter.member;
 
+import org.springframework.data.domain.Page;
 import umc.spring.domain.entity.Member;
+import umc.spring.domain.entity.Review;
 import umc.spring.domain.enums.Gender;
 import umc.spring.web.dto.member.MemberRequestDTO;
 import umc.spring.web.dto.member.MemberResponseDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MemberConverter {
 
@@ -33,6 +37,28 @@ public class MemberConverter {
                 .address(request.getAddress())
                 .specAddress(request.getSpecAddress())
                 .memberPreferList(new ArrayList<>())  // 초기화 중요!
+                .build();
+    }
+    public static MemberResponseDTO.MyReviewDTO toMyReviewDTO(Review review) {
+        return MemberResponseDTO.MyReviewDTO.builder()
+                .storeName(review.getStore().getName())
+                .score(review.getScore())
+                .body(review.getBody())
+                .createdAt(review.getCreatedAt())
+                .build();
+    }
+
+    public static MemberResponseDTO.MyReviewListDTO toMyReviewListDTO(Page<Review> reviews) {
+        List<MemberResponseDTO.MyReviewDTO> list = reviews.stream()
+                .map(MemberConverter::toMyReviewDTO)
+                .collect(Collectors.toList());
+
+        return MemberResponseDTO.MyReviewListDTO.builder()
+                .reviews(list)
+                .totalPage(reviews.getTotalPages())
+                .totalElements(reviews.getTotalElements())
+                .isFirst(reviews.isFirst())
+                .isLast(reviews.isLast())
                 .build();
     }
 }
