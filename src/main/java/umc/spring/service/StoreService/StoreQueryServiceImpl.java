@@ -7,8 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.spring.domain.entity.Mission;
+import umc.spring.domain.entity.Review;
 import umc.spring.domain.entity.Store;
 import umc.spring.repository.MissionRepository;
+import umc.spring.repository.ReviewRepository;
 import umc.spring.repository.StoreRepository.StoreRepository;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class StoreQueryServiceImpl implements StoreQueryService {
 
     private final StoreRepository storeRepository;
     private final MissionRepository missionRepository;
-
+    private final ReviewRepository reviewRepository;
     @Override
     public Optional<Store> findStore(Long id) {
         return storeRepository.findById(id);
@@ -42,4 +44,11 @@ public class StoreQueryServiceImpl implements StoreQueryService {
         Pageable pageable = PageRequest.of(page, 10);
         return missionRepository.findAllByStore(store, pageable);
     }
+    @Override
+    public Page<Review> getReviewList(Long storeId, Integer page) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new RuntimeException("Store not found"));
+        return reviewRepository.findAllByStore(store, PageRequest.of(page, 10));
+    }
+
 }

@@ -1,22 +1,29 @@
 package umc.spring.web.controller.store;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.spring.apiPayload.ApiResponse;
 import umc.spring.converter.StoreConverter;
 import umc.spring.domain.entity.Mission;
+import umc.spring.domain.entity.Review;
 import umc.spring.service.StoreService.StoreCommandService;
 import umc.spring.service.StoreService.StoreQueryService;
 import umc.spring.validation.ValidPage;
+import umc.spring.validation.annotation.ExistStore;
 import umc.spring.web.dto.store.MissionPreviewListDTO;
 import umc.spring.web.dto.store.StoreRequestDTO;
 import umc.spring.web.dto.store.StoreResponseDTO;
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/store")
 public class StoreRestController {
@@ -42,4 +49,25 @@ public class StoreRestController {
         Page<Mission> missionPage = storeQueryService.getMissionListByStoreId(storeId, page - 1);
         return ApiResponse.onSuccess(StoreConverter.toMissionPreviewListDTO(missionPage));
     }
+
+    @GetMapping("/{storeId}/reviews")
+    @Operation(summary = "특정 가게의 리뷰 목록 조회 API", description = "가게의 리뷰 목록을 페이징 처리하여 반환")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "STORE404", description = "존재하지 않는 가게")
+    })
+    @Parameters({
+            @Parameter(name = "storeId", description = "가게 ID (path variable)"),
+            @Parameter(name = "page", description = "조회할 페이지 번호 (query string)")
+    })
+    public ApiResponse<StoreResponseDTO.ReviewPreViewListDTO> getReviewList(
+            @ExistStore @PathVariable(name = "storeId") Long storeId,
+            @RequestParam(name = "page") Integer page) {
+
+        Page<Review> reviewPage = storeQueryService.getReviewList(storeId, page);
+        StoreResponseDTO.ReviewPreViewListDTO responseDTO = StoreConverter.reviewPreViewListDTO(reviewPage);
+        return ApiResponse.onSuccess(responseDTO);
+    }
+
+
 }

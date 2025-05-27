@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = StoreExistValidator.class)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExistStore {
     String message() default "존재하지 않는 가게입니다.";
