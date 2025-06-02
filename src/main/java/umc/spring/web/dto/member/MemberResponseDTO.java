@@ -41,6 +41,24 @@ public class MemberResponseDTO {
         private boolean isLast;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LoginResultDTO {
+        private Long memberId;
+        private String accessToken;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MemberInfoDTO{
+        String name;
+        String email;
+        String gender;
+    }
 }
 
 

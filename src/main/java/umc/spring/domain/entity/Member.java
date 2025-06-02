@@ -4,6 +4,7 @@ package umc.spring.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.spring.domain.base.BaseEntity;
+import umc.spring.domain.enums.Role;
 import umc.spring.domain.enums.SocialType;
 import umc.spring.domain.enums.Gender;
 import umc.spring.domain.enums.Status;
@@ -49,8 +50,8 @@ public class Member extends BaseEntity {
 
     private LocalDate inactiveDate;
 
-    @Column(nullable = false, length = 50)
-    private String email;
+//    @Column(nullable = false, length = 50)
+//    private String email;
 
     private Integer point;
 
@@ -65,4 +66,18 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberMission> memberMissionList = new ArrayList<>();
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+
+    public void encodePassword(String password) {
+        this.password = password;
+    }
 }

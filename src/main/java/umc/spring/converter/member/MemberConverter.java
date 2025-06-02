@@ -36,10 +36,13 @@ public class MemberConverter {
 
         return Member.builder()
                 .name(request.getName())
+                .email(request.getEmail())   // 추가된 코드
+                .password(request.getPassword())   // 추가된 코드
                 .gender(gender)
                 .address(request.getAddress())
                 .specAddress(request.getSpecAddress())
-                .memberPreferList(new ArrayList<>())  // 초기화 중요!
+                .role(request.getRole())   // 추가된 코드
+                .memberPreferList(new ArrayList<>())
                 .build();
     }
     public static MemberResponseDTO.MyReviewDTO toMyReviewDTO(Review review) {
@@ -83,6 +86,20 @@ public class MemberConverter {
                 .totalElements(missions.getTotalElements())
                 .isFirst(missions.isFirst())
                 .isLast(missions.isLast())
+                .build();
+    }
+
+    public static MemberResponseDTO.LoginResultDTO toLoginResultDTO(Long memberId, String accessToken) {
+        return MemberResponseDTO.LoginResultDTO.builder()
+                .memberId(memberId)
+                .accessToken(accessToken)
+                .build();
+    }
+
+    public static MemberResponseDTO.MemberInfoDTO toMemberInfoDTO(Member member) {
+        return MemberResponseDTO.MemberInfoDTO.builder()
+                .email(member.getEmail())
+                .name(member.getName())
                 .build();
     }
 }
