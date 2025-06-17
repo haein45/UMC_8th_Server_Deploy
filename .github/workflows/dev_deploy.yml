@@ -2,8 +2,8 @@ name: UMC Dev CI/CD
 
 on:
   push:
-    branches: [ develop ]  # develop 브랜치에 push가 일어날 때 실행
-
+    branches: [ main ]  # develop 브랜치에 push가 일어날 때 실행
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
