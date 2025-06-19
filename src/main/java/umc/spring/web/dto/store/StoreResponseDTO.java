@@ -17,6 +17,15 @@ public class StoreResponseDTO {
     private String address;
 
     @Getter
+    @AllArgsConstructor
+    public static class CreateReviewResultDTO {
+        private Long reviewId;
+        private String content;
+        private int score;
+        private String imageUrl;
+    }
+
+    @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder

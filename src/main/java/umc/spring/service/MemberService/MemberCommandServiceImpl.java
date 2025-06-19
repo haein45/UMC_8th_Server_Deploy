@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import umc.spring.apiPayload.code.status.ErrorStatus;
 import umc.spring.apiPayload.exception.handler.FoodCategoryHandler;
 import umc.spring.apiPayload.exception.handler.MemberHandler;
@@ -21,6 +23,7 @@ import umc.spring.repository.MemberMissionRepository.MemberMissionRepository;
 import umc.spring.repository.member.MemberRepository;
 import umc.spring.web.dto.member.MemberRequestDTO;
 import umc.spring.web.dto.member.MemberResponseDTO;
+import umc.spring.aws.s3.AmazonS3Manager;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +39,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     private final MemberMissionRepository memberMissionRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AmazonS3Manager amazonS3Manager;
 
     @Override
     public Member joinMember(MemberRequestDTO.JoinDto request) {
@@ -86,4 +90,32 @@ public class MemberCommandServiceImpl implements MemberCommandService {
                 accessToken
         );
     }
+
+    @Override
+    public String uploadProfileImage(Long memberId, MultipartFile profileImage) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        // S3에 이미지 업로드
+        String imageUrl = amazonS3Manager.uploadFile(profileImage);
+
+        // 멤버에 이미지 URL 저장
+        member.updateProfileImageUrl(imageUrl);
+
+        return imageUrl;
+    }
+
+    public void deleteProfileImage(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        String imageUrl = member.getProfileImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            String key = amazonS3Manager.extractKeyFromImageUrl(member.getProfileImageUrl());
+            amazonS3Manager.deleteFile(key);
+            member.updateProfileImageUrl(null); // DB에서도 제거
+        }
+    }
+
+
 }

@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.spring.apiPayload.ApiResponse;
 import umc.spring.converter.member.MemberConverter;
 import umc.spring.domain.entity.Member;
@@ -109,6 +110,16 @@ public class MemberRestController {
     )
     public ApiResponse<MemberResponseDTO.MemberInfoDTO> getMyInfo(HttpServletRequest request) {
         return ApiResponse.onSuccess(memberQueryService.getMemberInfo(request));
+    }
+
+    @PostMapping("/{memberId}/profile-image")
+    @Operation(summary = "프로필 이미지 업로드", description = "회원의 프로필 이미지를 업로드하고 URL을 반환합니다.")
+    public ApiResponse<String> uploadProfileImage(
+            @PathVariable Long memberId,
+            @RequestPart("profileImage") MultipartFile profileImage
+    ) {
+        String imageUrl = memberCommandService.uploadProfileImage(memberId, profileImage);
+        return ApiResponse.onSuccess(imageUrl);
     }
 
 }

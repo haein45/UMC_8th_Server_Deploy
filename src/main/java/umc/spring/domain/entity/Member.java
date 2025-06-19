@@ -76,6 +76,21 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
+    public void updateProfileImageUrl(String imageUrl) {
+        this.profileImageUrl = imageUrl;
+    }
+
+    public String extractKeyFromImageUrl(String imageUrl) {
+        // URL에서 key만 추출 (예: https://bucket.s3.region.amazonaws.com/folder/filename.jpg → folder/filename.jpg)
+        // AWS S3 URL은 항상 "https://...amazonaws.com/"까지가 공통 prefix임
+        int index = imageUrl.indexOf(".amazonaws.com/");
+        if (index == -1) return null; // 예외 처리
+        return imageUrl.substring(index + ".amazonaws.com/".length() + 1); // +1은 슬래시
+    }
+
 
     public void encodePassword(String password) {
         this.password = password;
