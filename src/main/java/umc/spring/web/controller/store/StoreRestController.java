@@ -3,21 +3,27 @@ package umc.spring.web.controller.store;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.spring.apiPayload.ApiResponse;
 import umc.spring.converter.StoreConverter;
 import umc.spring.domain.entity.Mission;
 import umc.spring.domain.entity.Review;
+import umc.spring.service.MemberService.MemberCommandService;
 import umc.spring.service.StoreService.StoreCommandService;
 import umc.spring.service.StoreService.StoreQueryService;
 import umc.spring.validation.ValidPage;
+import umc.spring.validation.annotation.ExistMember;
 import umc.spring.validation.annotation.ExistStore;
+import umc.spring.web.dto.review.ReviewRequestDTO;
 import umc.spring.web.dto.store.MissionPreviewListDTO;
 import umc.spring.web.dto.store.StoreRequestDTO;
 import umc.spring.web.dto.store.StoreResponseDTO;
@@ -30,6 +36,8 @@ public class StoreRestController {
 
     private final StoreCommandService storeCommandService;
     private final StoreQueryService storeQueryService;
+    private final MemberCommandService memberCommandService;
+
 
     @PostMapping
     public StoreResponseDTO addStore(@RequestBody @Valid StoreRequestDTO request) {
@@ -68,6 +76,27 @@ public class StoreRestController {
         StoreResponseDTO.ReviewPreViewListDTO responseDTO = StoreConverter.reviewPreViewListDTO(reviewPage);
         return ApiResponse.onSuccess(responseDTO);
     }
+
+    @PostMapping(value = "/{storeId}/reviews", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "리뷰 등록 (사진 포함)", description = "리뷰 내용과 사진을 함께 업로드합니다.")
+    public ApiResponse<StoreResponseDTO.CreateReviewResultDTO> createReview(
+            @Parameter(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+            @RequestPart("request") @Valid ReviewRequestDTO request,
+            @ExistStore @PathVariable(name = "storeId") Long storeId,
+            @ExistMember @RequestParam(name = "memberId") Long memberId,
+            @RequestPart("reviewPicture") MultipartFile reviewPicture) {
+
+        Review review = storeCommandService.createReview(memberId, storeId, request, reviewPicture);
+        return ApiResponse.onSuccess(StoreConverter.toCreateReviewResultDTO(review));
+    }
+
+    @DeleteMapping("/{memberId}/profile-image")
+    @Operation(summary = "프로필 이미지 삭제", description = "회원의 프로필 이미지를 삭제합니다.")
+    public ApiResponse<String> deleteProfileImage(@PathVariable Long memberId) {
+        memberCommandService.deleteProfileImage(memberId);
+        return ApiResponse.onSuccess("프로필 이미지가 삭제되었습니다.");
+    }
+
 
 
 }

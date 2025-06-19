@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import umc.spring.domain.base.BaseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -17,7 +20,7 @@ public class Review extends BaseEntity {
 
     private String title;
 
-    private String body;
+    private String content;
 
     private Float score;
 
@@ -34,10 +37,14 @@ public class Review extends BaseEntity {
     public String toString() {
         return "Review{" +
                 "id=" + id +
-                ", body='" + body + '\'' +
+                ", body='" + content + '\'' +
                 ", score=" + score +
                 '}';
     }
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewImage> reviewImages = new ArrayList<>();
+
 
 
 }

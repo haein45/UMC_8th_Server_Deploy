@@ -47,7 +47,7 @@ public class StoreConverter {
         return StoreResponseDTO.ReviewPreViewDTO.builder()
                 .ownerNickname(review.getMember().getName())
                 .score(review.getScore())
-                .body(review.getBody())
+                .body(review.getContent())
                 .createdAt(review.getCreatedAt().toLocalDate())
                 .build();
     }
@@ -66,6 +66,17 @@ public class StoreConverter {
                 .isLast(reviewPage.isLast())
                 .build();
     }
+    public static StoreResponseDTO.CreateReviewResultDTO toCreateReviewResultDTO(Review review) {
+        String imageUrl = review.getReviewImages().isEmpty()
+                ? null
+                : review.getReviewImages().get(0).getUrl();
 
+        return new StoreResponseDTO.CreateReviewResultDTO(
+                review.getId(),
+                review.getContent(),
+                review.getScore().intValue(),  // DTO도 Float으로 받아주면 형변환 없이 사용 가능
+                imageUrl
+        );
+    }
 }
 

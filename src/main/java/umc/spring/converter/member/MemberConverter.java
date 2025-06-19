@@ -49,7 +49,7 @@ public class MemberConverter {
         return MemberResponseDTO.MyReviewDTO.builder()
                 .storeName(review.getStore().getName())
                 .score(review.getScore())
-                .body(review.getBody())
+                .body(review.getContent())
                 .createdAt(review.getCreatedAt())
                 .build();
     }
